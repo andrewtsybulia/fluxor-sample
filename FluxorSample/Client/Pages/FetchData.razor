@@ -1,6 +1,9 @@
 ﻿@page "/fetchdata"
 @using FluxorSample.Shared
-@inject HttpClient Http
+@using Fluxor
+@using FluxorSample.Client.Features.WeatherForecast
+@using FluxorSample.Client.Models
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -8,7 +11,7 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (State.Value.Data is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,20 +20,24 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Date</th>
                 <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
                 <th>Summary</th>
+                <th>City</th>
+                <th>Country</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var forecast in State.Value.Data)
             {
                 <tr>
+                    <td>@forecast.Id</td>
                     <td>@forecast.Date.ToShortDateString()</td>
                     <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
                     <td>@forecast.Summary</td>
+                    <td>@forecast.City</td>
+                    <td>@forecast.Country</td>
                 </tr>
             }
         </tbody>
@@ -38,10 +45,26 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private List<LocationEditModel> EditModel = new List<LocationEditModel>();
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    public IDispatcher Dispatcher { get; set; }
+
+    [Inject]
+    public IState<WeatherForecastState> State { get; set; }
+
+    protected override void OnInitialized()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        SubscribeToAction<WeatherForecastSetAction>(action =>
+        {
+            EditModel = State.Value.Data.Select(f => new LocationEditModel()
+            {
+                Id = f.Id,
+                City = f.City,
+                Country = f.Country
+            })
+            .ToList();
+        });
+        Dispatcher.Dispatch(new WeatherForecastInitializeAction());
     }
 }
