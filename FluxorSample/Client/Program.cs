@@ -1,5 +1,8 @@
 using Fluxor;
 using FluxorSample.Client;
+using FluxorSample.Client.Features.Loading;
+using FluxorSample.Client.Features.WeatherForecast;
+using FluxorSample.Client.Middlewares;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -8,6 +11,21 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddFluxor(o => o.ScanAssemblies(typeof(Program).Assembly));
+builder.Services.AddFluxor(o => o
+    .ScanAssemblies(typeof(Program).Assembly)
+    .UseRouting()
+    .AddMiddleware<LoggingMiddleware>());
+builder.Services.AddSingleton<PerformWithLoadAsync>(async (dispatcher, operation) =>
+{
+    try
+    {
+        dispatcher.Dispatch(new SetLoadingOnAction());
+        await operation();
+    }
+    finally
+    {
+        dispatcher.Dispatch(new SetLoadingOffAction());
+    }
+});
 
 await builder.Build().RunAsync();

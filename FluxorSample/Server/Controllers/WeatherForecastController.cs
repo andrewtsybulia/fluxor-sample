@@ -30,8 +30,10 @@ namespace FluxorSample.Server.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IEnumerable<WeatherForecast>> Get()
         {
+            await Task.Delay(3000);
+
             return Enumerable.Range(1, 5).Select(index =>
             {
                 var city = Cities[Random.Shared.Next(Cities.Count)];
