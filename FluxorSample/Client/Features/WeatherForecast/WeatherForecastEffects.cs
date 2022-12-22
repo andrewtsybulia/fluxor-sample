@@ -12,18 +12,7 @@ public delegate Task PerformWithLoadAsync(IDispatcher dispatcher, Func<Task> ope
 
 public abstract class EffectBase
 {
-    public virtual async Task PerformWithLoadAsync(IDispatcher dispatcher, Func<Task> operation)
-    {
-        try
-        {
-            dispatcher.Dispatch(new SetLoadingOnAction());
-            await operation();
-        }
-        finally
-        {
-            dispatcher.Dispatch(new SetLoadingOffAction());
-        }
-    }
+
 }
 
 public sealed class WeatherForecastEffects : EffectBase

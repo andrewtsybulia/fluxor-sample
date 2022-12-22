@@ -1,9 +1,5 @@
 ﻿namespace FluxorSample.Client.Features.Loading;
 
-public class SetLoadingOnAction
-{
-}
+public record SetLoadingOnAction(Guid processId);
 
-public class SetLoadingOffAction
-{
-}
+public record SetLoadingOffAction(Guid processId);
