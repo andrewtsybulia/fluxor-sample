@@ -3,6 +3,7 @@ using FluxorSample.Client;
 using FluxorSample.Client.Features.Loading;
 using FluxorSample.Client.Features.WeatherForecast;
 using FluxorSample.Client.Middlewares;
+using FluxorSample.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -15,17 +16,6 @@ builder.Services.AddFluxor(o => o
     .ScanAssemblies(typeof(Program).Assembly)
     .UseRouting()
     .AddMiddleware<LoggingMiddleware>());
-builder.Services.AddSingleton<PerformWithLoadAsync>(async (dispatcher, operation) =>
-{
-    try
-    {
-        dispatcher.Dispatch(new SetLoadingOnAction());
-        await operation();
-    }
-    finally
-    {
-        dispatcher.Dispatch(new SetLoadingOffAction());
-    }
-});
+builder.Services.AddSingleton<LoadingStateService>();
 
 await builder.Build().RunAsync();

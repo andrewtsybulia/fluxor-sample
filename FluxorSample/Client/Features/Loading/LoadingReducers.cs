@@ -1,5 +1,4 @@
 ﻿using Fluxor;
-using FluxorSample.Client.Features.WeatherForecast;
 
 namespace FluxorSample.Client.Features.Loading;
 
@@ -9,19 +8,15 @@ public static class LoadingReducers
     public static LoadingState OnLoadingSetOnAction(
         LoadingState state, SetLoadingOnAction action)
     {
-        return state with
-        {
-            IsLoading = true
-        };
+        state.SetLoadingProcess(action.processId);
+        return state;
     }
 
     [ReducerMethod]
     public static LoadingState OnLoadingSetOffAction(
         LoadingState state, SetLoadingOffAction action)
     {
-        return state with
-        {
-            IsLoading = false
-        };
+        state.RemoveLoadingProcess(action.processId);
+        return state;
     }
 }
