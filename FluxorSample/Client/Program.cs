@@ -17,5 +17,16 @@ builder.Services.AddFluxor(o => o
     .UseRouting()
     .AddMiddleware<LoggingMiddleware>());
 builder.Services.AddSingleton<LoadingStateService>();
-
+//builder.Services.AddSingleton<PerformWithLoadAsync>(async (dispatcher, operation) =>
+//{
+//    try
+//    {
+//        dispatcher.Dispatch(new SetLoadingOnAction());
+//        await operation();
+//    }
+//    finally
+//    {
+//        dispatcher.Dispatch(new SetLoadingOffAction());
+//    }
+//});
 await builder.Build().RunAsync();

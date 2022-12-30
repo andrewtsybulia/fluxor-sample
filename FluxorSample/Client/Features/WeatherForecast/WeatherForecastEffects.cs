@@ -20,32 +20,28 @@ public sealed class WeatherForecastEffects : EffectBase
     private readonly HttpClient? _httpClient;
     private readonly PerformWithLoadAsync performWithLoadAsync;
 
-    public WeatherForecastEffects(HttpClient? httpClient, PerformWithLoadAsync performWithLoadAsync)
+    public WeatherForecastEffects(HttpClient? httpClient)
     {
         _httpClient = httpClient;
-        this.performWithLoadAsync = performWithLoadAsync;
+        //this.performWithLoadAsync = performWithLoadAsync;
     }
 
     [EffectMethod]
     public async Task OnWeatherForecastInitialize(
         WeatherForecastInitializeAction action, IDispatcher dispatcher)
     {
-        var operation = async () =>
+        var response = await _httpClient!.GetFromJsonAsync<WeatherForecastData[]>("WeatherForecast");
+
+        dispatcher.Dispatch(new WeatherForecastSetAction(response!));
+
+        if (response.Length == 1)
         {
-            var response = await _httpClient!.GetFromJsonAsync<WeatherForecastData[]>("WeatherForecast");
 
-            dispatcher.Dispatch(new WeatherForecastSetAction(response!));
+        }
+        else if (response.Length == 2)
+        {
 
-            if (response.Length == 1)
-            {
-
-            }
-            else if (response.Length == 2)
-            {
-
-            }
-        };
-        await performWithLoadAsync(dispatcher, operation);
+        }
     }
 }
 
