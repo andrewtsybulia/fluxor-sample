@@ -5,14 +5,89 @@
 <h1>Counter</h1>
 
 <p role="status">Current count: @currentCount</p>
+@foreach (var item in _displayUser)
+{
+    <EditForm Model="this">
+        <div class="form-group">
+            <InputMask id=@item.Id.ToString()
+                       @bind-Value=@item.Ammount
+                       class="form-control"
+                       data-mask="00.00.00.00.00"
+                       placeholder="phone no"
+                       validateOnKeyPress="false"
+                       returnRawValue="true" />
+            @*@GetInputMask(item)*@
+        </div>
+    </EditForm>
+}
+
+<button class="btn btn-primary" @onclick=@(() => ActiveUser(1))>ActiveUser(1)</button>
+<button class="btn btn-primary" @onclick=@(() => ActiveUser(2))>ActiveUser(2)</button>
+<button class="btn btn-primary" @onclick=@(() => ActiveUser(3))>ActiveUser(3)</button>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
+    private readonly List<User> _users = new()
+{
+        new() { Id = 1, Ammount = "111"},
+        new() { Id = 2, Ammount = "222"},
+        new() { Id = 3, Ammount = "222"},
+    };
+    private List<User> _displayUser = new();
+    private int _activeUserId = 1;
     private int currentCount = 0;
+    private string currentCountString = "0";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _displayUser.Add(_users.First());
+    }
 
     private void IncrementCount()
     {
         currentCount++;
+    }
+
+    private RenderFragment GetInputMask(User user)
+    {
+        var i = 0;
+        var propInfoValue = typeof(User).GetProperty("Ammount");
+        var s = propInfoValue.GetValue(user);
+
+        return builder =>
+        {
+            builder.OpenComponent<InputMask>(i++);
+            builder.AddAttribute(i++, "id", user.Id.ToString());
+            builder.AddAttribute(i++, "data-mask", "00.00.00.00.00");
+            builder.AddAttribute(i++, "class", "form-control");
+            builder.AddAttribute(i++, "Value", s);//BindConverter.FormatValue(user.Ammount)
+            builder.AddAttribute(i++, "ValueChanged", (EventCallback.Factory.Create<string>(
+                this,
+                EventCallback.Factory.CreateInferred(
+                    this,
+                    __value => propInfoValue.SetValue(user, __value), (string)propInfoValue.GetValue(user)))));
+            var constant = System.Linq.Expressions.Expression.Constant(user, typeof(User));
+            var exp = System.Linq.Expressions.MemberExpression.Property(constant, "Ammount");
+            var lamb = System.Linq.Expressions.Expression.Lambda<Func<string>>(exp);
+            builder.AddAttribute(4, "ValueExpression", lamb);
+            builder.CloseComponent();
+        };
+    }
+
+    private void ActiveUser(int id)
+    {
+        _activeUserId = id;
+        _displayUser.Clear();
+        InvokeAsync(StateHasChanged);
+        _displayUser.Add(_users.First(u => u.Id == _activeUserId));
+        InvokeAsync(StateHasChanged);
+    }
+
+    class User
+    {
+        public int Id { get; set; }
+        public string Ammount { get; set; }
     }
 }

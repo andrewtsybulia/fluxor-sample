@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluxorSample.Server", "Server\FluxorSample.Server.csproj", "{1B854CE9-A01A-4D4F-8929-93A9F29506D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluxorSample.Server", "Server\FluxorSample.Server.csproj", "{1B854CE9-A01A-4D4F-8929-93A9F29506D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluxorSample.Client", "Client\FluxorSample.Client.csproj", "{AB722DCF-3B9D-4AF5-95C7-300349CE3DF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluxorSample.Client", "Client\FluxorSample.Client.csproj", "{AB722DCF-3B9D-4AF5-95C7-300349CE3DF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluxorSample.Shared", "Shared\FluxorSample.Shared.csproj", "{E20C64C4-8EDC-48A7-A97C-5B2D474486A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluxorSample.Shared", "Shared\FluxorSample.Shared.csproj", "{E20C64C4-8EDC-48A7-A97C-5B2D474486A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
